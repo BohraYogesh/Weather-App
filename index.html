@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/x-icon" href="Images/logo.png">
+  <link rel="icon" type="image/x-icon" href="">
+  <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+  <title>Weather App</title>
+</head>
+<body>
+  <div class="card">
+    <div class="search">
+      <i class="bx bxs-map"></i>
+      <input type="text"  placeholder="Enter City Name">
+      <button class="bx bx-search"></button>
+    </div>
+    <div class="weather-box">
+      <div class="box">
+        <div class="info-wearther">
+          <div class="name">Jaipur</div>
+          <div class="weather">
+            <img src="Images/mist.png">
+            <p class="temperature">0<span>°c</span></p>
+            <p class="description">Broken Cloud</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+      <div class="weather-details">
+        <div class="humidity">
+          <i class='bx bx-water'></i>
+          <div class="text">
+            <div class="info-humidity">
+              <span>0%</span>
+            </div>
+            <p>Humidity</p>
+          </div>
+        </div>
+        <div class="wind">
+          <i class='bx bx-wind'></i>
+          <div class="text">
+            <div class="info-wind">
+              <span>0Km/h</span>
+            </div>
+            <p>Wind Speed</p>
+          </div>
+        </div>
+      </div>
+      <div class="not-found">
+        <div class="box">
+          <img src="Images/404.png">
+          <p>Oops! Location not found</p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const card = document.querySelector('.card'); 
+      const search = document.querySelector('.search button'); 
+      const weatherBox = document.querySelector('.weather-box'); 
+      const weatherDetails = document.querySelector('.weather-details');
+      const error404 = document.querySelector('.not-found');
+
+      search.addEventListener('click', () => {
+        const APIKey = '73e52df2b0f1eb4c20e9756a11bc393b';
+        const city = document.querySelector('.search input').value;
+      
+        
+        if (city == '')
+          return;
+
+        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${APIKey}`).then(response => response.json()).then(json => {
+
+          if(json.cod == '404'){
+            card.style.height = '400px';
+            weatherBox.classList.remove('active')
+            weatherDetails.classList.remove('active')
+            error404.classList.add('active')
+            return;
+          }
+
+            card.style.height = '555px';
+            weatherBox.classList.add('active')
+            weatherDetails.classList.add('active')
+            error404.classList.remove('active')
+
+          const image = document.querySelector('.weather-box img');
+          const temperature = document.querySelector('.weather-box .temperature');
+          const name = document.querySelector('.weather-box .name');
+          const description = document.querySelector('.weather-box .description');
+          const humidity = document.querySelector('.weather-details .humidity span');
+          const wind = document.querySelector('.weather-details .wind span');
+
+          switch (json.weather[0].main) {
+            case 'Clear':
+              image.src= 'Images/clear.png'
+              break;
+            case 'Rain':
+              image.src= 'Images/rain.png'
+              break;
+            case 'Scattered Clouds':
+              image.src= 'Images/clouds.png'
+              break;
+            case 'Haze':
+              image.src= 'Images/mist.png'
+              break;
+            case 'Snow':
+              image.src= 'Images/snow.png'
+              break;
+            case 'Drizzle':
+              image.src= 'Images/drizzle.png'
+              break;
+          
+            default:
+              image.src = 'Images/mist.png'
+              
+          }
+          name.innerHTML = `${(json.name)}`;
+          temperature.innerHTML = `${parseInt(json.main.temp)}<span>°C</span>`;
+          description.innerHTML = `${(json.weather[0].description)}`;
+          humidity.innerHTML = `${(json.main.humidity)}%`;
+          wind.innerHTML = `${parseInt(json.wind.speed)}Km/h`;
+  
+
+        });
+      });
+
+
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+    <!-- <script>
+      const apiKey = "73e52df2b0f1eb4c20e9756a11bc393b";
+      const apiUrl = "https://api.openweathermap.org/data/2.5/weather?&units=matric&q=";
+      const searchBox = document.querySelector(".search input");
+      const searchBtn = document.querySelector(".search button");
+      const weatherIcon = document.querySelector(".weather-icon")
+
+
+      async function checkWeather(city){
+        const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
+
+        if(response.status == 404){
+          document.querySelector(".error").style.display = "block";
+          document.querySelector(".weather").style.display = "none";
+        }else{
+          var data = await response.json();
+          console.log(data);
+
+document.querySelector(".city").innerHTML = data.name;
+document.querySelector(".temp").innerHTML = Math.round(data.main.temp)  + "°c";
+document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
+
+  if(data.weather[0].main == "Clouds"){
+    weatherIcon.src = "Images/clouds.png"
+    }
+    else if(data.weather[0].main == "Clear"){
+      weatherIcon.src = "Images/clear.png"
+    }
+    else if(data.weather[0].main == "Rain"){
+      weatherIcon.src = "Images/rain.png"
+    }
+    else if(data.weather[0].main == "Drizzle"){
+      weatherIcon.src = "Images/drizzle.png"
+    }
+    else if(data.weather[0].main == "Mist"){
+      weatherIcon.src = "Images/mist.png"
+  }
+  document.querySelector(".weather").style.display = "block"
+  document.querySelector(".error").style.display = "none"
+        }
+      }
+
+      searchBtn.addEventListener("click", ()=>{
+        checkWeather(searchBox.value);
+      })
+      
+    </script> -->
+</body>
+</html>
